@@ -5,8 +5,6 @@ import os
 
 repo_id = "Sasimscct/Predictive-Maintenance"
 repo_type = "dataset"
-# Set your Hugging Face token as an environment variable
-os.environ["HF_TOKEN"] = "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"
 
 print("Hugging Face token set as environment variable.")
 # Initialize API client
