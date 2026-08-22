@@ -1,0 +1,102 @@
+name: Predictive Maintenance Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+
+  register-dataset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r Predictive_Maintenance/requirements.txt
+
+      - name: Upload Dataset to Hugging Face
+        env:
+          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+        run: |
+          python Predictive_Maintenance/model_building/data_register.py
+
+  data-prep:
+    needs: register-dataset
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r Predictive_Maintenance/requirements.txt
+
+      - name: Data Preparation
+        env:
+          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+        run: |
+          python Predictive_Maintenance/model_building/prep.py
+
+  model-training:
+    needs: data-prep
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r Predictive_Maintenance/requirements.txt
+
+      - name: Train Model
+        env:
+          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+        run: |
+          python Predictive_Maintenance/model_building/train.py
+
+  deploy-hosting:
+    needs: model-training
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r Predictive_Maintenance/requirements.txt
+
+      - name: Deploy to Hugging Face Space
+        env:
+          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+        run: |
+          python Predictive_Maintenance/hosting/hosting.py
