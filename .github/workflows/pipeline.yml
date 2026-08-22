@@ -28,7 +28,7 @@ jobs:
 
       - name: Upload Dataset to Hugging Face
         env:
-          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python Predictive_Maintenance/model_building/data_register.py
 
@@ -51,7 +51,7 @@ jobs:
 
       - name: Data Preparation
         env:
-          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python Predictive_Maintenance/model_building/prep.py
 
@@ -74,7 +74,7 @@ jobs:
 
       - name: Train Model
         env:
-          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python Predictive_Maintenance/model_building/train.py
 
@@ -97,6 +97,6 @@ jobs:
 
       - name: Deploy to Hugging Face Space
         env:
-          HF_TOKEN_NEW: ${{ secrets.HF_TOKEN_NEW }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python Predictive_Maintenance/hosting/hosting.py
